@@ -48,32 +48,35 @@
     <Compile Include="SocialNPC.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\GuntherDialogue.xnb">
+    <None Include="assets\AdventureGuild.tbin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="assets\GuntherSchedule.xnb">
+    <None Include="assets\ArchaeologyHouse.tbin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="assets\MarlonDialogue.xnb">
+    <None Include="assets\gunther\dialogue.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="assets\MarlonSchedule.xnb">
+    <None Include="assets\gunther\schedule.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Characters\Gunther.xnb">
+    <None Include="assets\marlon\dialogue.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Characters\Marlon.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Maps\AdventureGuild.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Maps\ArchaeologyHouse.xnb">
+    <None Include="assets\marlon\schedule.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="i18n\default.json" />
     <None Include="manifest.json" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="assets\gunther\sprite.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\marlon\sprite.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
