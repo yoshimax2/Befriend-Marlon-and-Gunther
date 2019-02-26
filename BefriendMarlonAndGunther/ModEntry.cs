@@ -61,22 +61,22 @@ namespace BefriendMarlonAndGunther
 
             if (asset.AssetNameEquals("Characters/Dialogue/Marlon"))
             {
-                return this.Helper.Content.Load<T>("MarlonDialogue.xnb", ContentSource.ModFolder);
+                return this.Helper.Content.Load<T>("assets/MarlonDialogue.xnb", ContentSource.ModFolder);
             }
 
             if (asset.AssetNameEquals("Characters/Dialogue/Gunther"))
             {
-                return this.Helper.Content.Load<T>("GuntherDialogue.xnb", ContentSource.ModFolder);
+                return this.Helper.Content.Load<T>("assets/GuntherDialogue.xnb", ContentSource.ModFolder);
             }
 
             if (asset.AssetNameEquals("Characters/Schedules/Marlon"))
             {
-                return this.Helper.Content.Load<T>("MarlonSchedule.xnb", ContentSource.ModFolder);
+                return this.Helper.Content.Load<T>("assets/MarlonSchedule.xnb", ContentSource.ModFolder);
             }
 
             if (asset.AssetNameEquals("Characters/Schedules/Gunther"))
             {
-                return this.Helper.Content.Load<T>("GuntherSchedule.xnb", ContentSource.ModFolder);
+                return this.Helper.Content.Load<T>("assets/GuntherSchedule.xnb", ContentSource.ModFolder);
             }
 
             throw new InvalidOperationException($"Unexpected asset '{asset.AssetName}'.");
