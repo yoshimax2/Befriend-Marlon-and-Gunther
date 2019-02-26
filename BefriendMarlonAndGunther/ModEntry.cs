@@ -101,7 +101,7 @@ namespace BefriendMarlonAndGunther
             {
                 var data = asset.AsDictionary<string, string>().Data;
                 data["Marlon"] = "adult/neutral/outgoing/neutral/male/not-datable/Marnie/Town/fall 2/Wizard ''/AdventureGuild 8 4/Marlon";
-                data["Gunther"] = "adult / polite / neutral / negative / male / not - datable / null / Town / summer 23/ Marlon ''/ArchaeologyHouse 12 32/Gunther";
+                data["Gunther"] = "adult/polite/neutral/negative/male/not-datable/null/Town/summer 23/Marlon ''/ArchaeologyHouse 12 32/Gunther";
             }
 
             else if (asset.AssetNameEquals("Data/Events/Mine"))
