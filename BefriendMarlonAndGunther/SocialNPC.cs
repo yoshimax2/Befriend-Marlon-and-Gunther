@@ -1,35 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
-using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Netcode;
 using StardewValley;
-using StardewValley.BellsAndWhistles;
-using StardewValley.Buildings;
 using StardewValley.Characters;
-using StardewValley.Locations;
-using StardewValley.Menus;
-using StardewValley.Monsters;
-using StardewValley.Objects;
-using StardewValley.Quests;
-using StardewValley.TerrainFeatures;
-using StardewValley.Tools;
-using xTile.Dimensions;
-using xTile.ObjectModel;
-using xTile.Tiles;
-
 
 namespace BefriendMarlonAndGunther
 {
-    public class SocialNPC : NPC, IComparable
+    public class SocialNPC : NPC
     {
-        public SocialNPC()
-        {
-        }
+        public SocialNPC() { }
 
         public SocialNPC(AnimatedSprite sprite, Vector2 position, int facingDir, string name, LocalizedContentManager content = null)
             : base(sprite, position, 2, name)
@@ -44,7 +25,7 @@ namespace BefriendMarlonAndGunther
             {
                 this.Portrait = content.Load<Texture2D>("Portraits\\" + name);
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
@@ -82,7 +63,7 @@ namespace BefriendMarlonAndGunther
                 else
                     this.Age = 1;
                 string str2 = strArray[1];
-           
+
                 if (!(str2 == nameof(rude)))
                 {
                     if (str2 == nameof(polite))
@@ -115,18 +96,18 @@ namespace BefriendMarlonAndGunther
                 else
                     this.Gender = 1;
                 string str6 = strArray[5];
-  
+
                 if (!(str6 == nameof(datable)))
                 {
                     if (str6 == "not-datable")
                         this.datable.Value = false;
-          
+
                 }
                 else
                     this.datable.Value = true;
                 this.loveInterest = strArray[6];
                 string str7 = strArray[7];
-         
+
                 if (!(str7 == "Desert"))
                 {
                     if (!(str7 == "Other"))
@@ -139,26 +120,26 @@ namespace BefriendMarlonAndGunther
                 }
                 else
                     this.homeRegion = 1;
-        
+
                 if (strArray.Length > 8)
                 {
                     this.Birthday_Season = strArray[8].Split(' ')[0];
 
                     this.Birthday_Day = 2;
                 }
-          
+
                 for (int index = 0; index < source.Count; ++index)
                 {
-                    if (source.ElementAt<KeyValuePair<string, string>>(index).Key.Equals(name))
+                    if (source.ElementAt(index).Key.Equals(name))
                     {
                         this.id = index;
                         break;
                     }
                 }
-        
-                this.displayName = strArray[11];         
+
+                this.displayName = strArray[11];
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
             }
         }
@@ -167,7 +148,7 @@ namespace BefriendMarlonAndGunther
         {
             get
             {
-                if (this.Name.Equals("Sandy") && !Game1.player.mailReceived.Contains("ccVault") || (this.Name.Equals("???")) || (this.Name.Equals("Bouncer")) || (this.Name.Equals("Gil")) || (this.Name.Equals("Henchman"))  ||(this.IsMonster) || (this is Horse) || (this is Pet) || (this is JunimoHarvester) || (this.Name.Equals("Dwarf")) || this.Name.Contains("Qi") || (this is Pet) || (this is Horse) || (this is Junimo))
+                if (this.Name.Equals("Sandy") && !Game1.player.mailReceived.Contains("ccVault") || (this.Name.Equals("???")) || (this.Name.Equals("Bouncer")) || (this.Name.Equals("Gil")) || (this.Name.Equals("Henchman")) || (this.IsMonster) || (this is Horse) || (this is Pet) || (this is JunimoHarvester) || (this.Name.Equals("Dwarf")) || this.Name.Contains("Qi") || (this is Pet) || (this is Horse) || (this is Junimo))
                     return false;
                 else if (this.Name.Equals("Krobus"))
                     return Game1.player.friendshipData.ContainsKey("Krobus");
@@ -175,7 +156,6 @@ namespace BefriendMarlonAndGunther
                     return true;
             }
 
-        } 
-        
+        }
     }
 }

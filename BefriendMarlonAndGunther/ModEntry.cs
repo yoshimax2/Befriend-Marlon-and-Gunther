@@ -1,26 +1,13 @@
-﻿
-
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using StardewValley;
-using StardewValley.Menus;
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using StardewValley.Characters;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using System.Threading;
-using StardewValley.Quests;
-using StardewValley.Locations;
-using System.Diagnostics;
-
+using StardewValley;
 
 namespace BefriendMarlonAndGunther
 {
-
     public class ModEntry : Mod, IAssetLoader
     {
         NPC BackupMarlon = new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2((float)(8 * StardewValley.Game1.tileSize), (float)(5 * StardewValley.Game1.tileSize)), "AdventureGuild", 2, "Marlon", false, (Dictionary<int, int[]>)null, Game1.content.Load<Texture2D>("Portraits\\Marlon"));
@@ -31,7 +18,6 @@ namespace BefriendMarlonAndGunther
 
         public bool CanLoad<T>(IAssetInfo asset)
         {
-
             if (asset.AssetNameEquals("Characters/Dialogue/Marlon"))
             {
                 return true;
@@ -57,8 +43,6 @@ namespace BefriendMarlonAndGunther
 
         public T Load<T>(IAssetInfo asset)
         {
-
-
             if (asset.AssetNameEquals("Characters/Dialogue/Marlon"))
             {
                 return this.Helper.Content.Load<T>("assets/MarlonDialogue.xnb", ContentSource.ModFolder);
@@ -81,8 +65,8 @@ namespace BefriendMarlonAndGunther
 
             throw new InvalidOperationException($"Unexpected asset '{asset.AssetName}'.");
         }
-        public void AfterSaveCreated(object sender, EventArgs args) {
-            
+        public void AfterSaveCreated(object sender, EventArgs args)
+        {
             BackupMarlon.followSchedule = true;
             BackupGunther.followSchedule = true;
             MarlonSocial.followSchedule = true;
@@ -90,29 +74,19 @@ namespace BefriendMarlonAndGunther
             GuntherSocial.Name = "Gunther";
             MarlonSocial.Name = "Marlon";
 
-            //   SocialQuest = new SocializeQuest();
-            //   Game1.player.removeQuest(9);
-
             Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;
             Game1.getLocationFromName("ArchaeologyHouse").characters[0] = GuntherSocial;
-            //   Game1.player.questLog.Add(SocialQuest);
-
         }
-       
+
         public void SaveEvents_AfterSave(object sender, EventArgs args)
         {
             Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;
             Game1.getLocationFromName("ArchaeologyHouse").characters[0] = GuntherSocial;
-
-            /*    if (!SocialQuest.completed)
-                {
-                    Game1.player.questLog.Add(SocialQuest);
-                } */
         }
 
         private void AfterLoad(object sender, EventArgs args)
-        {      
-            Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;           
+        {
+            Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;
             Game1.getLocationFromName("ArchaeologyHouse").characters[0] = GuntherSocial;
             GuntherSocial.Name = "Gunther";
             BackupMarlon.followSchedule = true;
@@ -124,26 +98,12 @@ namespace BefriendMarlonAndGunther
             MarlonSocial.Birthday_Season = "fall";
             GuntherSocial.Birthday_Day = 22;
             GuntherSocial.Birthday_Season = "spring";
-
-            /*   if (!(bool)SocialQuest.completed)
-               {
-                   Game1.player.questLog.Add(SocialQuest);
-                   Monitor.Log("Added quest!");
-                   Debug.Write("Added quest!"); 
-
-               } */
-        }
-
-        private void AfterTitleReturn(object sender, EventArgs args) {          
-            //    Game1.player.questLog.Remove(SocialQuest);
         }
 
         private void BeforeSave(object sender, EventArgs args)
         {
-            
-            Game1.getLocationFromName("AdventureGuild").characters[0] = BackupMarlon;          
+            Game1.getLocationFromName("AdventureGuild").characters[0] = BackupMarlon;
             Game1.getLocationFromName("ArchaeologyHouse").characters[0] = BackupGunther;
-           
         }
 
         public override void Entry(IModHelper helper)
@@ -157,7 +117,7 @@ namespace BefriendMarlonAndGunther
 
             if (!source.ContainsKey("Gunther"))
             {
-              source.Add("Gunther", "adult / polite / neutral / negative / male / not - datable / null / Town / summer 23/ Marlon ''/ArchaeologyHouse 12 32/Gunther");
+                source.Add("Gunther", "adult / polite / neutral / negative / male / not - datable / null / Town / summer 23/ Marlon ''/ArchaeologyHouse 12 32/Gunther");
             }
 
             Dictionary<string, string> source2 = Game1.content.Load<Dictionary<string, string>>("Data\\Events\\Mine.xnb");
@@ -185,38 +145,8 @@ namespace BefriendMarlonAndGunther
             }
             SaveEvents.AfterCreate += AfterSaveCreated;
             SaveEvents.AfterLoad += AfterLoad;
-            SaveEvents.AfterSave += SaveEvents_AfterSave;          
-            SaveEvents.BeforeSave += BeforeSave;         
+            SaveEvents.AfterSave += SaveEvents_AfterSave;
+            SaveEvents.BeforeSave += BeforeSave;
         }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override object GetApi()
-        {
-            return base.GetApi();
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
-     
     }
-        }
-
-    
-
-
+}
