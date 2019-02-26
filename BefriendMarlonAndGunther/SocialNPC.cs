@@ -1,161 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StardewValley;
-using StardewValley.Characters;
+﻿using StardewValley;
 
 namespace BefriendMarlonAndGunther
 {
+    /// <summary>Wraps an NPC to force it to be socialisable.</summary>
     public class SocialNPC : NPC
     {
-        public SocialNPC() { }
+        /*********
+        ** Accessors
+        *********/
+        /// <summary>The original NPC.</summary>
+        public NPC OriginalNpc { get; }
 
-        public SocialNPC(AnimatedSprite sprite, Vector2 position, int facingDir, string name, LocalizedContentManager content = null)
-            : base(sprite, position, 2, name)
+        /// <summary>Where the NPC can socialize.</summary>
+        public override bool CanSocialize { get; } = true;
+
+
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
+        /// <param name="npc">The original NPC.</param>
+        public SocialNPC(NPC npc)
+            : base(npc.Sprite, npc.Position, npc.DefaultMap, npc.FacingDirection, npc.Name, npc.datable.Value, null, npc.Portrait)
         {
-            this.faceDirection(facingDir);
-            this.DefaultPosition = position;
-            this.defaultFacingDirection = facingDir;
-            this.lastCrossroad = new Microsoft.Xna.Framework.Rectangle((int)position.X, (int)position.Y + 64, 64, 64);
-            if (content == null)
-                return;
-            try
-            {
-                this.Portrait = content.Load<Texture2D>("Portraits\\" + name);
-            }
-            catch
-            {
-            }
-        }
-
-        public SocialNPC(AnimatedSprite sprite, Vector2 position, string defaultMap, int facingDirection, string name, bool datable, Dictionary<int, int[]> schedule, Texture2D portrait)
-            : this(sprite, position, defaultMap, facingDirection, name, schedule, portrait, false)
-        {
-            this.datable.Value = datable;
-        }
-
-        public SocialNPC(AnimatedSprite sprite, Vector2 position, string defaultMap, int facingDir, string name, Dictionary<int, int[]> schedule, Texture2D portrait, bool eventActor)
-            : base(sprite, position, 2, name)
-        {
-            this.Portrait = portrait;
-            this.faceDirection(facingDir);
-            this.DefaultPosition = position;
-            this.defaultMap.Value = defaultMap;
-            this.currentLocation = Game1.getLocationFromName(defaultMap);
-            this.defaultFacingDirection = facingDir;
-            if (!eventActor)
-                this.lastCrossroad = new Microsoft.Xna.Framework.Rectangle((int)position.X, (int)position.Y + 64, 64, 64);
-            try
-            {
-                Dictionary<string, string> source = Game1.content.Load<Dictionary<string, string>>("Data\\NPCDispositions");
-                Console.Write("Starting out good");
-                if (!source.ContainsKey(name))
-                    return;
-                string[] strArray = source[name].Split('/');
-                string str1 = strArray[0];
-                if (!(str1 == nameof(teen)))
-                {
-                    if (str1 == nameof(child))
-                        this.Age = 2;
-                }
-                else
-                    this.Age = 1;
-                string str2 = strArray[1];
-
-                if (!(str2 == nameof(rude)))
-                {
-                    if (str2 == nameof(polite))
-                        this.Manners = 1;
-                }
-                else
-                    this.Manners = 2;
-                string str3 = strArray[2];
-                if (!(str3 == nameof(shy)))
-                {
-                    if (str3 == nameof(outgoing))
-                        this.SocialAnxiety = 0;
-                }
-                else
-                    this.SocialAnxiety = 1;
-                string str4 = strArray[3];
-                if (!(str4 == nameof(positive)))
-                {
-                    if (str4 == nameof(negative))
-                        this.Optimism = 1;
-                }
-                else
-                    this.Optimism = 0;
-                string str5 = strArray[4];
-                if (!(str5 == nameof(female)))
-                {
-                    if (str5 == nameof(undefined))
-                        this.Gender = 2;
-                }
-                else
-                    this.Gender = 1;
-                string str6 = strArray[5];
-
-                if (!(str6 == nameof(datable)))
-                {
-                    if (str6 == "not-datable")
-                        this.datable.Value = false;
-
-                }
-                else
-                    this.datable.Value = true;
-                this.loveInterest = strArray[6];
-                string str7 = strArray[7];
-
-                if (!(str7 == "Desert"))
-                {
-                    if (!(str7 == "Other"))
-                    {
-                        if (str7 == "Town")
-                            this.homeRegion = 2;
-                    }
-                    else
-                        this.homeRegion = 0;
-                }
-                else
-                    this.homeRegion = 1;
-
-                if (strArray.Length > 8)
-                {
-                    this.Birthday_Season = strArray[8].Split(' ')[0];
-
-                    this.Birthday_Day = 2;
-                }
-
-                for (int index = 0; index < source.Count; ++index)
-                {
-                    if (source.ElementAt(index).Key.Equals(name))
-                    {
-                        this.id = index;
-                        break;
-                    }
-                }
-
-                this.displayName = strArray[11];
-            }
-            catch (FormatException)
-            {
-            }
-        }
-
-        public override bool CanSocialize
-        {
-            get
-            {
-                if (this.Name.Equals("Sandy") && !Game1.player.mailReceived.Contains("ccVault") || (this.Name.Equals("???")) || (this.Name.Equals("Bouncer")) || (this.Name.Equals("Gil")) || (this.Name.Equals("Henchman")) || (this.IsMonster) || (this is Horse) || (this is Pet) || (this is JunimoHarvester) || (this.Name.Equals("Dwarf")) || this.Name.Contains("Qi") || (this is Pet) || (this is Horse) || (this is Junimo))
-                    return false;
-                else if (this.Name.Equals("Krobus"))
-                    return Game1.player.friendshipData.ContainsKey("Krobus");
-                else
-                    return true;
-            }
-
+            this.OriginalNpc = npc;
         }
     }
 }

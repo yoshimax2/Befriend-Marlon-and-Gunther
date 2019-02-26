@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -11,12 +9,19 @@ namespace BefriendMarlonAndGunther
     /// <summary>The mod entry class loaded by SMAPI.</summary>
     public class ModEntry : Mod, IAssetLoader
     {
-        NPC BackupMarlon = new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(8 * Game1.tileSize, 5 * Game1.tileSize), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon"));
-        NPC BackupGunther = new NPC(new AnimatedSprite("Characters\\Gunther", 0, 16, 32), new Vector2(3 * Game1.tileSize, 8 * Game1.tileSize), "ArchaeologyHouse", 2, "Gunther", false, null, Game1.content.Load<Texture2D>("Portraits\\Gunther"));
-        // Quest SocialQuest;
-        SocialNPC MarlonSocial = new SocialNPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(8 * Game1.tileSize, 5 * Game1.tileSize), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon"));
-        SocialNPC GuntherSocial = new SocialNPC(new AnimatedSprite("Characters\\Gunther", 0, 16, 32), new Vector2(3 * Game1.tileSize, 8 * Game1.tileSize), "ArchaeologyHouse", 2, "Gunther", false, null, Game1.content.Load<Texture2D>("Portraits\\Gunther"));
+        /*********
+        ** Fields
+        *********/
+        /// <summary>The overridden Marlon NPC.</summary>
+        private SocialNPC Marlon;
 
+        /// <summary>The overridden Gunther NPC.</summary>
+        private SocialNPC Gunther;
+
+
+        /*********
+        ** Public methods
+        *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
@@ -57,104 +62,65 @@ namespace BefriendMarlonAndGunther
                 source3.Add("Gunther", "I love this. I'll definitely add it to my personal collection./101 102 103 104 105 106 107 108 109 110/I appreciate that you got me this./80 82 84 86/I already have this in my collection, but thanks./60 62 64 68/Honestly, I really don't like this./2 4 75 76 77 78/Thank you./378 380 384 386/ ");
             }
 
-            helper.Events.GameLoop.SaveCreated += this.OnSaveCreated;
-            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
-            helper.Events.GameLoop.Saved += this.OnSaved;
+            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
             helper.Events.GameLoop.Saving += this.OnSaving;
         }
 
         public bool CanLoad<T>(IAssetInfo asset)
         {
-            if (asset.AssetNameEquals("Characters/Dialogue/Marlon"))
-            {
-                return true;
-            }
-
-            if (asset.AssetNameEquals("Characters/Dialogue/Gunther"))
-            {
-                return true;
-            }
-
-            if (asset.AssetNameEquals("Characters/Schedules/Marlon"))
-            {
-                return true;
-            }
-
-            if (asset.AssetNameEquals("Characters/Schedules/Gunther"))
-            {
-                return true;
-            }
-
-            return false;
+            return
+                asset.AssetNameEquals("Characters/Dialogue/Marlon")
+                || asset.AssetNameEquals("Characters/Dialogue/Gunther")
+                || asset.AssetNameEquals("Characters/Schedules/Marlon")
+                || asset.AssetNameEquals("Characters/Schedules/Gunther");
         }
 
         public T Load<T>(IAssetInfo asset)
         {
             if (asset.AssetNameEquals("Characters/Dialogue/Marlon"))
-            {
-                return this.Helper.Content.Load<T>("assets/MarlonDialogue.xnb", ContentSource.ModFolder);
-            }
-
+                return this.Helper.Content.Load<T>("assets/MarlonDialogue.xnb");
             if (asset.AssetNameEquals("Characters/Dialogue/Gunther"))
-            {
-                return this.Helper.Content.Load<T>("assets/GuntherDialogue.xnb", ContentSource.ModFolder);
-            }
-
+                return this.Helper.Content.Load<T>("assets/GuntherDialogue.xnb");
             if (asset.AssetNameEquals("Characters/Schedules/Marlon"))
-            {
-                return this.Helper.Content.Load<T>("assets/MarlonSchedule.xnb", ContentSource.ModFolder);
-            }
-
+                return this.Helper.Content.Load<T>("assets/MarlonSchedule.xnb");
             if (asset.AssetNameEquals("Characters/Schedules/Gunther"))
-            {
-                return this.Helper.Content.Load<T>("assets/GuntherSchedule.xnb", ContentSource.ModFolder);
-            }
+                return this.Helper.Content.Load<T>("assets/GuntherSchedule.xnb");
 
             throw new InvalidOperationException($"Unexpected asset '{asset.AssetName}'.");
         }
 
-        /// <summary>Raised after the game finishes creating the save file.</summary>
+
+        /*********
+        ** Private methods
+        *********/
+        /// <summary>Raised after the game begins a new day (including when the player loads a save).</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        public void OnSaveCreated(object sender, SaveCreatedEventArgs e)
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            BackupMarlon.followSchedule = true;
-            BackupGunther.followSchedule = true;
-            MarlonSocial.followSchedule = true;
-            GuntherSocial.followSchedule = true;
-            GuntherSocial.Name = "Gunther";
-            MarlonSocial.Name = "Marlon";
+            // wrap NPCs
+            this.Gunther = new SocialNPC(Game1.getCharacterFromName("Gunther", mustBeVillager: true))
+            {
+                followSchedule = true,
+                position = { X = 3 * Game1.tileSize, Y = 8 * Game1.tileSize },
+                Birthday_Season = "spring",
+                Birthday_Day = 22
+            };
+            this.Marlon = new SocialNPC(Game1.getCharacterFromName("Marlon", mustBeVillager: true))
+            {
+                followSchedule = true,
+                position = { X = 8 * Game1.tileSize, Y = 5 * Game1.tileSize },
+                Birthday_Season = "fall",
+                Birthday_Day = 8
+            };
 
-            Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;
-            Game1.getLocationFromName("ArchaeologyHouse").characters[0] = GuntherSocial;
-        }
-
-        /// <summary>Raised after the game finishes writing data to the save file (except the initial save creation).</summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event data.</param>
-        public void OnSaved(object sender, EventArgs e)
-        {
-            Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;
-            Game1.getLocationFromName("ArchaeologyHouse").characters[0] = GuntherSocial;
-        }
-
-        /// <summary>Raised after the player loads a save slot and the world is initialised.</summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event data.</param>
-        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
-        {
-            Game1.getLocationFromName("AdventureGuild").characters[0] = MarlonSocial;
-            Game1.getLocationFromName("ArchaeologyHouse").characters[0] = GuntherSocial;
-            GuntherSocial.Name = "Gunther";
-            BackupMarlon.followSchedule = true;
-            BackupGunther.followSchedule = true;
-            MarlonSocial.followSchedule = true;
-            GuntherSocial.followSchedule = true;
-            MarlonSocial.checkSchedule(1000);
-            MarlonSocial.Birthday_Day = 8;
-            MarlonSocial.Birthday_Season = "fall";
-            GuntherSocial.Birthday_Day = 22;
-            GuntherSocial.Birthday_Season = "spring";
+            // swap in social NPC
+            foreach (SocialNPC npc in new[] { this.Gunther, this.Marlon })
+            {
+                npc.OriginalNpc.currentLocation.characters.Add(npc);
+                npc.OriginalNpc.currentLocation.characters.Remove(npc.OriginalNpc);
+                npc.checkSchedule(1000);
+            }
         }
 
         /// <summary>Raised before the game begins writes data to the save file (except the initial save creation).</summary>
@@ -162,8 +128,12 @@ namespace BefriendMarlonAndGunther
         /// <param name="e">The event data.</param>
         private void OnSaving(object sender, SavingEventArgs args)
         {
-            Game1.getLocationFromName("AdventureGuild").characters[0] = BackupMarlon;
-            Game1.getLocationFromName("ArchaeologyHouse").characters[0] = BackupGunther;
+            // swap in original NPC
+            foreach (SocialNPC npc in new[] { this.Gunther, this.Marlon })
+            {
+                npc.currentLocation.characters.Add(npc.OriginalNpc);
+                npc.currentLocation.characters.Remove(npc);
+            }
         }
     }
 }
