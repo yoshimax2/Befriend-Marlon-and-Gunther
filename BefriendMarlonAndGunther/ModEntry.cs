@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -100,8 +101,8 @@ namespace BefriendMarlonAndGunther
             if (asset.AssetNameEquals("Data/NPCDispositions"))
             {
                 var data = asset.AsDictionary<string, string>().Data;
-                data["Marlon"] = "adult/neutral/outgoing/neutral/male/not-datable/Marnie/Town/fall 2/Wizard ''/AdventureGuild 8 4/Marlon";
-                data["Gunther"] = "adult/polite/neutral/negative/male/not-datable/null/Town/summer 23/Marlon ''/ArchaeologyHouse 12 32/Gunther";
+                data["Marlon"] = "adult/neutral/outgoing/neutral/male/not-datable/Marnie/Town/fall 8/Wizard ''/AdventureGuild 8 4/Marlon";
+                data["Gunther"] = "adult/polite/neutral/negative/male/not-datable/null/Town/spring 22/Marlon ''/ArchaeologyHouse 12 32/Gunther";
             }
 
             else if (asset.AssetNameEquals("Data/Events/Mine"))
@@ -136,28 +137,14 @@ namespace BefriendMarlonAndGunther
         /// <param name="e">The event data.</param>
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            // wrap NPCs
-            this.Gunther = new SocialNPC(Game1.getCharacterFromName("Gunther", mustBeVillager: true))
-            {
-                followSchedule = true,
-                position = { X = 3 * Game1.tileSize, Y = 8 * Game1.tileSize },
-                Birthday_Season = "spring",
-                Birthday_Day = 22
-            };
-            this.Marlon = new SocialNPC(Game1.getCharacterFromName("Marlon", mustBeVillager: true))
-            {
-                followSchedule = true,
-                position = { X = 8 * Game1.tileSize, Y = 5 * Game1.tileSize },
-                Birthday_Season = "fall",
-                Birthday_Day = 8
-            };
-
             // swap in social NPC
+            this.Gunther = new SocialNPC(Game1.getCharacterFromName("Gunther", mustBeVillager: true), new Vector2(3, 8));
+            this.Marlon = new SocialNPC(Game1.getCharacterFromName("Marlon", mustBeVillager: true), new Vector2(8, 5));
             foreach (SocialNPC npc in new[] { this.Gunther, this.Marlon })
             {
                 npc.OriginalNpc.currentLocation.characters.Add(npc);
                 npc.OriginalNpc.currentLocation.characters.Remove(npc.OriginalNpc);
-                npc.checkSchedule(1000);
+                npc.ForceReload();
             }
         }
 

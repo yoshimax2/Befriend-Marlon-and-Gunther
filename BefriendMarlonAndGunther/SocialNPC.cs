@@ -1,4 +1,5 @@
-﻿using StardewValley;
+﻿using Microsoft.Xna.Framework;
+using StardewValley;
 
 namespace BefriendMarlonAndGunther
 {
@@ -20,10 +21,31 @@ namespace BefriendMarlonAndGunther
         *********/
         /// <summary>Construct an instance.</summary>
         /// <param name="npc">The original NPC.</param>
-        public SocialNPC(NPC npc)
-            : base(npc.Sprite, npc.Position, npc.DefaultMap, npc.FacingDirection, npc.Name, npc.datable.Value, null, npc.Portrait)
+        /// <param name="tile">The initial tile position.</param>
+        public SocialNPC(NPC npc, Vector2 tile)
+            : base(npc.Sprite, new Vector2(tile.X * Game1.tileSize, tile.Y * Game1.tileSize), npc.DefaultMap, npc.FacingDirection, npc.Name, npc.datable.Value, null, npc.Portrait)
         {
             this.OriginalNpc = npc;
+        }
+
+        /// <summary>Force the NPC data to reload.</summary>
+        public void ForceReload()
+        {
+            // force reload for current day
+            bool newDay = Game1.newDay;
+            try
+            {
+                Game1.newDay = true;
+                this.reloadSprite();
+            }
+            finally
+            {
+                Game1.newDay = newDay;
+            }
+
+            // set schedule
+            //this.scheduleTimeToTry = 9999999; // use current time
+            this.checkSchedule(600);
         }
     }
 }
